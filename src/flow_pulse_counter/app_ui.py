@@ -1,36 +1,45 @@
 from pydoover import ui
-
-
+from .app_config import FlowPulseCounterConfig
 class FlowPulseCounterUI:
-    def __init__(self):
-        self.is_working = ui.BooleanVariable("is_working", "We Working?")
-        self.uptime = ui.DateTimeVariable("uptime", "Started")
-
-        self.send_alert = ui.Action("send_alert", "Send message as alert", position=1)
-        self.text_parameter = ui.TextParameter("test_message", "Put in a message")
-
-        self.test_output = ui.TextVariable("test_output", "This is message we got")
-
-        self.battery = ui.Submodule("battery", "Battery Module")
-        self.battery_voltage = ui.NumericVariable(
-            "voltage", "Battery Voltage", precision=2, ranges=[
-                ui.Range("Low", 0, 10, ui.Colour.red),
-                ui.Range("Normal", 10, 20, ui.Colour.green),
-                ui.Range("High", 20, 30, ui.Colour.blue),
-            ])
-
-        self.battery_low_voltage_alert = ui.NumericParameter("low_voltage_alert", "Low Voltage Alert")
-        self.battery_charge_mode = ui.StateCommand("charge_mode", "Charge Mode", user_options=[
-            ui.Option("charge", "Charge"),
-            ui.Option("discharge", "Discharge"),
-            ui.Option("idle", "Idle")
-        ])
-        self.battery.add_children(self.battery_voltage, self.battery_low_voltage_alert, self.battery_charge_mode)
-
+    def __init__(self, config: FlowPulseCounterConfig):
+        self.config = config
+        
+        self.flow_total_count = ui.NumericParameter(
+            "flow_total_count", 
+            f"Total Flow ({self.config.volume_unit})", 
+            precision=1,
+            default=0,
+            hidden=True
+        )
+        
+        self.current_flow_rate = ui.NumericVariable(
+            "current_flow_rate", 
+            f"Current Flow Rate ({self.config.flow_rate_units.value})", 
+            precision=2,
+            hidden=not self.config.show_flow_rate.value
+        )
+        
+        self.daily_total = ui.NumericVariable(
+            "daily_total", 
+            f"Daily Total ({self.config.volume_unit})", 
+            precision=1,
+            hidden=not self.config.show_daily_total.value
+        )
+        
+        self.total_flow = ui.NumericVariable(
+            "total_flow", 
+            f"Total Flow ({self.config.volume_unit})", 
+            precision=1,
+            hidden=not self.config.totalizer_enabled
+        )
+        
     def fetch(self):
-        return self.is_working, self.uptime, self.send_alert, self.text_parameter, self.test_output, self.battery
+        return self.current_flow_rate, self.daily_total, self.total_flow, self.flow_total_count
 
-    def update(self, is_working, voltage, uptime):
-        self.is_working.update(is_working)
-        self.uptime.update(uptime)
-        self.battery_voltage.update(voltage)
+    def update(self, current_flow_rate: float = None , daily_total: float = None, total_flow: float = None):
+        if daily_total is not None:
+            self.daily_total.update(daily_total)
+        if current_flow_rate is not None:
+            self.current_flow_rate.update(current_flow_rate)
+        if total_flow is not None:
+            self.total_flow.update(total_flow)

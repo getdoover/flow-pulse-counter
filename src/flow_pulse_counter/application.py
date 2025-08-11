@@ -3,10 +3,12 @@ import time
 
 from pydoover.docker import Application
 from pydoover import ui
+from datetime import datetime, timedelta
 
 from .app_config import FlowPulseCounterConfig
 from .app_ui import FlowPulseCounterUI
 from .app_state import FlowPulseCounterState
+from .flow_meter import FlowMeter
 
 log = logging.getLogger()
 
@@ -19,37 +21,50 @@ class FlowPulseCounterApplication(Application):
         self.started: float = time.time()
         self.ui: FlowPulseCounterUI = None
         self.state: FlowPulseCounterState = None
+        
+        self.loop_target_period = 0.5
+        self.next_reset_time = None
+        self.total_on_daily_reset = 0
 
     async def setup(self):
-        self.ui = FlowPulseCounterUI()
-        self.state = FlowPulseCounterState()
+        self.ui = FlowPulseCounterUI(self.config)
+        
+        self.flow_meter = FlowMeter(
+            plt_iface=self.platform_iface,
+            l_per_pulse=self.config.l_per_pulse,
+            volume_unit_litres=self.config.volume_unit_litres,
+            time_unit_seconds=self.config.time_unit_seconds,
+            pulse_pin=self.config.pulse_pin
+        )
+        
+        hours = self.config.reset_daily_total_time
+        tomorrow = datetime.now().date() + timedelta(days=1)
+        self.daily_total_reset_time = datetime.combine(tomorrow, datetime.min.time()).replace(hour=hours)
         self.ui_manager.add_children(*self.ui.fetch())
 
     async def main_loop(self):
-        log.info(f"State is: {self.state.state}")
+        cloud_count_total = self.ui.flow_total_count.current_value
+        total_flow = (self.flow_meter.total_count + cloud_count_total) * self.config.l_per_pulse
+        daily_total = total_flow - self.total_on_daily_reset
+        
+        
+        if (
+            self.ui.total_flow.current_value is not None 
+            and self.ui.total_flow.current_value != total_flow
+        ):
+            total_flow = None
+            daily_total = None
 
-        # a random value we set inside our simulator. Go check it out in simulators/sample!
-        random_value = self.get_tag("random_value", self.config.sim_app_key.value)
-        log.info("Random value from simulator: %s", random_value)
+        if datetime.now() > self.daily_total_reset_time:
+            self.total_on_daily_reset = total_flow
+            self.daily_total_reset_time += timedelta(days=1)
+            log.info(f"Daily total reset at {self.daily_total_reset_time.strftime('%Y-%m-%d %H:%M:%S')}")
+            
+        self.ui.flow_total_count.coerce_value(total_flow)
 
         self.ui.update(
-            True,
-            random_value,
-            time.time() - self.started,
+            current_flow_rate=self.flow_meter.flow_rate,
+            daily_total=daily_total,
+            total_flow=total_flow
         )
 
-    @ui.callback("send_alert")
-    async def on_send_alert(self, new_value):
-        log.info(f"Sending alert: {self.ui.test_output.current_value}")
-        await self.publish_to_channel("significantAlerts", self.ui.test_output.current_value)
-        self.ui.send_alert.coerce(None)
-
-    @ui.callback("test_message")
-    async def on_text_parameter_change(self, new_value):
-        log.info(f"New value for test message: {new_value}")
-        # Set the value as an output to the corresponding variable is this case
-        self.ui.test_output.update(new_value)
-
-    @ui.callback("charge_mode")
-    async def on_state_command(self, new_value):
-        log.info(f"New value for state command: {new_value}")
