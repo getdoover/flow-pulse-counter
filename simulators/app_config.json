@@ -1,6 +1,7 @@
 {
-    "simulator_app_key": "sim_app_key",
-    "digital_input_count": 1,
-    "digital_output_count": 2,
-    "a_funny_message": "yeeha"
+    "flow_pulse_pin": 0,
+    "flow_rate_units": "L/min",
+    "reset_daily_total_time": 10,
+    "totalizer_enabled": true,
+    "litres_per_pulse": 1.0
 }

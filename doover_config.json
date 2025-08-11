@@ -44,10 +44,10 @@
                         "gal/min",
                         "gal/hr",
                         "gal/day",
-                        "m\u00b3/sec",
-                        "m\u00b3/min",
-                        "m\u00b3/hr",
-                        "m\u00b3/day"
+                        "m^3/sec",
+                        "m^3/min",
+                        "m^3/hr",
+                        "m^3/day"
                     ],
                     "title": "Flow Rate Units",
                     "x-name": "flow_rate_units",

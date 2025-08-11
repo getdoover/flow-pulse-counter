@@ -37,7 +37,7 @@ class FlowPulseCounterApplication(Application):
             pulse_pin=self.config.pulse_pin
         )
         
-        hours = self.config.reset_daily_total_time
+        hours = self.config.reset_daily_total_time.value
         tomorrow = datetime.now().date() + timedelta(days=1)
         self.daily_total_reset_time = datetime.combine(tomorrow, datetime.min.time()).replace(hour=hours)
         self.ui_manager.add_children(*self.ui.fetch())
@@ -60,7 +60,7 @@ class FlowPulseCounterApplication(Application):
             self.daily_total_reset_time += timedelta(days=1)
             log.info(f"Daily total reset at {self.daily_total_reset_time.strftime('%Y-%m-%d %H:%M:%S')}")
             
-        self.ui.flow_total_count.coerce_value(total_flow)
+        self.ui.flow_total_count.coerce(total_flow)
 
         self.ui.update(
             current_flow_rate=self.flow_meter.flow_rate,

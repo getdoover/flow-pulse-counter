@@ -42,7 +42,7 @@ class FlowMeter:
         self.reset_kalman()
 
         self.pulse_counter = self.plt_iface.get_new_pulse_counter(
-            di=self.config.flow_pulse_pin.value,
+            di=self.pulse_pin,
             edge="rising",
             callback=self.pulse_counter_callback,
             rate_window_secs=60,

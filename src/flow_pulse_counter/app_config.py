@@ -13,7 +13,7 @@ class TimeUnits(enum.Enum):
 class VolumeUnits(enum.Enum):
     LITERS = VolumeUnit("L", 1.0)
     GALLONS = VolumeUnit("gal", 3.78541)
-    CUBIC_METERS = VolumeUnit("m³", 1000.0)
+    CUBIC_METERS = VolumeUnit("m^3", 1000.0)
 
 def generate_flow_rate_units():
     members = {}
@@ -26,11 +26,10 @@ def generate_flow_rate_units():
 class FlowPulseCounterConfig(config.Schema):
     def __init__(self):  
         FlowRateUnits = generate_flow_rate_units()
-        print(f"FlowRateUnits: {FlowRateUnits.__dict__}")
         
         self.litres_per_pulse = config.Number(
             "Litres per Pulse",
-            default=0.001,
+            default=1.1,
             description="The volume of fluid dispensed per pulse from the flow meter.",
         )
         
@@ -54,16 +53,16 @@ class FlowPulseCounterConfig(config.Schema):
             description="The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm.",
         )
         
-        self.enable_daily_total = config.Boolean(
-            "Enable Daily Total",
+        self.show_daily_total = config.Boolean(
+            "Show Daily Total",
             default=True,
-            description="Enable the daily total in the UI",
+            description="Show the daily total in the UI",
         )
         
         self.show_totalizer = config.Boolean(
-            "Totalizer Enabled",
+            "Show Totalizer",
             default=True,
-            description="Enable the totalizer in the UI"
+            description="Show the totalizer in the UI"
         )
 
         self.show_flow_rate = config.Boolean(
@@ -74,7 +73,7 @@ class FlowPulseCounterConfig(config.Schema):
 
     @property
     def totalizer_enabled(self):
-        return self.totalizer.value
+        return self.show_totalizer.value
     
     @property
     def pulse_pin(self):
@@ -86,8 +85,8 @@ class FlowPulseCounterConfig(config.Schema):
     
     @property
     def daily_total_enabled(self):
-        return self.enable_daily_total.value
-    
+        return self.show_daily_total.value
+
     @property
     def volume_unit(self):
         return self.flow_rate_units.value.volume_unit
