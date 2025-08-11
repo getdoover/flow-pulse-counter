@@ -18,33 +18,80 @@
             "title": "Application Config",
             "type": "object",
             "properties": {
-                "digital_outputs_enabled": {
-                    "title": "Digital Outputs Enabled",
-                    "x-name": "digital_outputs_enabled",
+                "litres_per_pulse": {
+                    "title": "Litres per Pulse",
+                    "x-name": "litres_per_pulse",
                     "x-hidden": false,
-                    "type": "boolean",
-                    "default": true
+                    "type": "number",
+                    "description": "The volume of fluid dispensed per pulse from the flow meter.",
+                    "default": 0.001
                 },
-                "a_funny_message": {
-                    "title": "A Funny Message",
-                    "x-name": "a_funny_message",
+                "flow_pulse_pin": {
+                    "title": "Flow Pulse Pin",
+                    "x-name": "flow_pulse_pin",
                     "x-hidden": false,
-                    "type": "string"
+                    "type": "integer",
+                    "description": "The DI pin connected to the flow meter pulse output.",
+                    "default": 0
                 },
-                "simulator_app_key": {
-                    "format": "doover-application",
-                    "title": "Simulator App Key",
-                    "x-name": "simulator_app_key",
+                "flow_rate_units": {
+                    "enum": [
+                        "L/sec",
+                        "L/min",
+                        "L/hr",
+                        "L/day",
+                        "gal/sec",
+                        "gal/min",
+                        "gal/hr",
+                        "gal/day",
+                        "m\u00b3/sec",
+                        "m\u00b3/min",
+                        "m\u00b3/hr",
+                        "m\u00b3/day"
+                    ],
+                    "title": "Flow Rate Units",
+                    "x-name": "flow_rate_units",
                     "x-hidden": false,
                     "type": "string",
-                    "description": "The app key for the simulator"
+                    "default": "L/min"
+                },
+                "reset_daily_total_time": {
+                    "title": "Reset Daily Total Time",
+                    "x-name": "reset_daily_total_time",
+                    "x-hidden": false,
+                    "type": "integer",
+                    "description": "The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm.",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 23
+                },
+                "enable_daily_total": {
+                    "title": "Enable Daily Total",
+                    "x-name": "enable_daily_total",
+                    "x-hidden": false,
+                    "type": "boolean",
+                    "description": "Enable the daily total in the UI",
+                    "default": true
+                },
+                "totalizer_enabled": {
+                    "title": "Totalizer Enabled",
+                    "x-name": "totalizer_enabled",
+                    "x-hidden": false,
+                    "type": "boolean",
+                    "description": "Enable the totalizer in the UI",
+                    "default": true
+                },
+                "show_flow_rate": {
+                    "title": "Show Flow Rate",
+                    "x-name": "show_flow_rate",
+                    "x-hidden": false,
+                    "type": "boolean",
+                    "description": "Enable the flow rate in the UI",
+                    "default": true
                 }
             },
             "additionalElements": true,
-            "required": [
-                "a_funny_message",
-                "simulator_app_key"
-            ]
+            "required": []
         }
     }
 }

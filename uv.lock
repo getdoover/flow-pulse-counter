@@ -187,7 +187,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pydoover", specifier = ">=0.4.10" },
+    { name = "pydoover", specifier = ">=0.4.13" },
     { name = "transitions", specifier = ">=0.9.2" },
 ]
 
@@ -518,15 +518,15 @@ wheels = [
 
 [[package]]
 name = "pydoover"
-version = "0.4.10"
+version = "0.4.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7c/33/92de76104f6efcf54f4df0c80f1d0beed7c9c8cb1da3149ad5e65338c87e/pydoover-0.4.10.tar.gz", hash = "sha256:d55b4a0691811c2100fa3539fd2ac5db39216759bc2690816272ee7c83ac76c9", size = 197233, upload-time = "2025-07-07T05:08:47.425Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f7/ff/5a23850d0604bdd9d1219f50caa7a488acf72aedc754cfc40bfce4a55be3/pydoover-0.4.13.tar.gz", hash = "sha256:29bc2f263536b0e279ab5d3b7dc66aadfbe26dd5a0cf77629e46fb38f4e50102", size = 200596, upload-time = "2025-07-30T03:18:19.573Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/29/494530d93134d71bfb011f3485fad494734dd147c629120afa8671e80784/pydoover-0.4.10-py3-none-any.whl", hash = "sha256:6380348e8a0e0a696f5ea487eeb4e0e5f893651aa6f6706d58266e917bc6a5fc", size = 142044, upload-time = "2025-07-07T05:08:46.339Z" },
+    { url = "https://files.pythonhosted.org/packages/e2/54/031b0ceeae6312abe5539eeef08f428291ec5a49c6c6899c0d1a78309b7e/pydoover-0.4.13-py3-none-any.whl", hash = "sha256:4945bba3e97f55dfdedd7fb0e7a1cc24629ad1b6cf44528f9c3a81a0c9464204", size = 145139, upload-time = "2025-07-30T03:18:18.253Z" },
 ]
 
 [[package]]

@@ -23,10 +23,11 @@ def generate_flow_rate_units():
             members[name] = FlowRateUnit(vol.value, time.value)
     return enum.Enum("FlowRateUnits", members)
 
-FlowRateUnits = generate_flow_rate_units()
-
 class FlowPulseCounterConfig(config.Schema):
-    def __init__(self):
+    def __init__(self):  
+        FlowRateUnits = generate_flow_rate_units()
+        print(f"FlowRateUnits: {FlowRateUnits.__dict__}")
+        
         self.litres_per_pulse = config.Number(
             "Litres per Pulse",
             default=0.001,
@@ -42,13 +43,14 @@ class FlowPulseCounterConfig(config.Schema):
         self.flow_rate_units = config.Enum(
             "Flow Rate Units",
             choices=FlowRateUnits,
+            default=FlowRateUnits.L_PER_MIN
         )
         
         self.reset_daily_total_time = config.Integer(
             "Reset Daily Total Time",
             default=0,
-            min_value=0,
-            max_value=23,
+            minimum=0,
+            maximum=23,
             description="The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm.",
         )
         
