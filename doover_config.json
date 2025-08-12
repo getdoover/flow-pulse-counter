@@ -7,9 +7,7 @@
         "allow_many": true,
         "description": "An app for that takes a pulse input (from a flow meter) and shows total flow and daily flow in the Doover UI. ",
         "long_description": "README.md",
-        "depends_on": [
-            "platform_iface"
-        ],
+        "depends_on": [],
         "owner_org_key": "36a22e32-ab81-4a39-b400-869d532a052d",
         "image_name": "ghcr.io/getdoover/flow-pulse-counter:main",
         "container_registry_profile_key": "88953909-e9c4-4f81-9ec0-56239d4b0a2e",
@@ -26,7 +24,7 @@
                     "x-hidden": false,
                     "type": "number",
                     "description": "The volume of fluid dispensed per pulse from the flow meter.",
-                    "default": 0.001
+                    "default": 1.1
                 },
                 "flow_pulse_pin": {
                     "title": "Flow Pulse Pin",
@@ -67,20 +65,20 @@
                     "minimum": 0,
                     "maximum": 23
                 },
-                "enable_daily_total": {
-                    "title": "Enable Daily Total",
-                    "x-name": "enable_daily_total",
+                "show_daily_total": {
+                    "title": "Show Daily Total",
+                    "x-name": "show_daily_total",
                     "x-hidden": false,
                     "type": "boolean",
-                    "description": "Enable the daily total in the UI",
+                    "description": "Show the daily total in the UI",
                     "default": true
                 },
-                "totalizer_enabled": {
-                    "title": "Totalizer Enabled",
-                    "x-name": "totalizer_enabled",
+                "show_totalizer": {
+                    "title": "Show Totalizer",
+                    "x-name": "show_totalizer",
                     "x-hidden": false,
                     "type": "boolean",
-                    "description": "Enable the totalizer in the UI",
+                    "description": "Show the totalizer in the UI",
                     "default": true
                 },
                 "show_flow_rate": {
@@ -94,6 +92,10 @@
             },
             "additionalElements": true,
             "required": []
-        }
+        },
+        "key": "b4208bfc-7256-418c-9508-a6e45dbdc591",
+        "code_repo_key": null,
+        "repo_branch": "main",
+        "staging_config": {}
     }
 }
