@@ -30,7 +30,7 @@ class FlowPulseCounterConfig(config.Schema):
         self.litres_per_pulse = config.Number(
             "Litres per Pulse",
             default=1.1,
-            description="The volume of fluid dispensed per pulse from the flow meter.",
+            description="The Litres of fluid dispensed per pulse from the flow meter.",
         )
         
         self.flow_pulse_pin = config.Integer(
@@ -42,7 +42,8 @@ class FlowPulseCounterConfig(config.Schema):
         self.flow_rate_units = config.Enum(
             "Flow Rate Units",
             choices=FlowRateUnits,
-            default=FlowRateUnits.L_PER_MIN
+            default=FlowRateUnits.L_PER_MIN,
+            description="The units to use for flow rate measurement on the App.",
         )
         
         self.reset_daily_total_time = config.Integer(
@@ -50,7 +51,7 @@ class FlowPulseCounterConfig(config.Schema):
             default=0,
             minimum=0,
             maximum=23,
-            description="The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm.",
+            description="The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm etc",
         )
         
         self.show_daily_total = config.Boolean(
