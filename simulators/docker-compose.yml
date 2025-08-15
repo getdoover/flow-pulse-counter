@@ -41,6 +41,6 @@ services:
       - CONFIG_FP=/app/simulators/app_config.json
       - HEALTHCHECK_PORT=49202
       # - DDA_URI=192.168.0.53:50051
-    volumes:
+    # volumes:
       # - ./app_config.json:/app/app_config.json
-      - /etc/localtime:/etc/localtime:ro
+      # - /etc/localtime:/etc/localtime:ro

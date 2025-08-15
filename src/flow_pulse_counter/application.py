@@ -41,12 +41,18 @@ class FlowPulseCounterApplication(Application):
         
         _daily_total_reset_time = self.get_tag("daily_total_reset_time")
         if _daily_total_reset_time is None:
-            self.daily_total_reset_time = hour_to_datetime(self.config.reset_daily_total_time.value)
+            self.daily_total_reset_time = hour_to_datetime(
+                self.config.reset_daily_total_time.value,
+                self.config.reset_time_timezone.value
+            )
         else:
             # for testing:
             # self.daily_total_reset_time = datetime.fromisoformat(_daily_total_reset_time)
             
-            config_daily_total_reset_time = hour_to_datetime(self.config.reset_daily_total_time.value)
+            config_daily_total_reset_time = hour_to_datetime(
+                self.config.reset_daily_total_time.value,
+                self.config.reset_time_timezone.value
+            )
             tag_daily_total_reset_time = datetime.fromisoformat(_daily_total_reset_time)
             self.daily_total_reset_time = datetime.combine(tag_daily_total_reset_time, config_daily_total_reset_time.time())    
         await self.set_tag("daily_total_reset_time", self.daily_total_reset_time.isoformat())

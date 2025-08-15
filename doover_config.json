@@ -78,6 +78,23 @@
                     "minimum": 0,
                     "maximum": 23
                 },
+                "time_timezone": {
+                    "enum": [
+                        "Australia/Sydney",
+                        "Australia/Brisbane",
+                        "Australia/Melbourne",
+                        "Australia/Perth",
+                        "Australia/Adelaide",
+                        "Australia/Darwin",
+                        "Australia/Hobart"
+                    ],
+                    "title": "Time Timezone",
+                    "x-name": "time_timezone",
+                    "x-hidden": false,
+                    "type": "string",
+                    "description": "The timezone to use for the reset time.",
+                    "default": "Australia/Brisbane"
+                },
                 "show_daily_total": {
                     "title": "Show Daily Total",
                     "x-name": "show_daily_total",

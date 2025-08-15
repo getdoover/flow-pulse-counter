@@ -1,7 +1,7 @@
 {
     "flow_pulse_pin": 0,
     "flow_rate_units": "L/min",
-    "reset_daily_total_time": 12,
+    "reset_daily_total_time": 16,
     "totalizer_enabled": true,
     "litres_per_pulse": 0.125,
     "pulse_edge_mode": "falling"

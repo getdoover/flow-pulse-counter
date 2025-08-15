@@ -18,7 +18,16 @@ class VolumeUnits(enum.Enum):
 class EdgeMode(enum.Enum):
     RISING = "rising"
     FALLING = "falling"
-
+    
+class Timezone(enum.Enum):
+    SYDNEY = "Australia/Sydney"
+    BRISBANE = "Australia/Brisbane"
+    MELBOURNE = "Australia/Melbourne"
+    PERTH = "Australia/Perth"
+    ADELAIDE = "Australia/Adelaide"
+    DARWIN = "Australia/Darwin"
+    HOBART = "Australia/Hobart"
+    
 def generate_flow_rate_units():
     members = {}
     for vol in VolumeUnits:
@@ -64,6 +73,13 @@ class FlowPulseCounterConfig(config.Schema):
             minimum=0,
             maximum=23,
             description="The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm etc",
+        )
+        
+        self.reset_time_timezone = config.Enum(
+            "Time Timezone",
+            choices=Timezone,
+            default=Timezone.BRISBANE,
+            description="The timezone to use for the reset time.",
         )
         
         self.show_daily_total = config.Boolean(
