@@ -63,7 +63,7 @@
                     ],
                     "title": "Flow Rate Units",
                     "x-name": "flow_rate_units",
-                    "x-hidden": false,
+                    "x-hidden": true,
                     "type": "string",
                     "description": "The units to use for flow rate measurement on the App.",
                     "default": "L/min"
@@ -97,10 +97,10 @@
                 "show_flow_rate": {
                     "title": "Show Flow Rate",
                     "x-name": "show_flow_rate",
-                    "x-hidden": false,
+                    "x-hidden": true,
                     "type": "boolean",
                     "description": "Enable the flow rate in the UI",
-                    "default": true
+                    "default": false
                 }
             },
             "additionalElements": true,
