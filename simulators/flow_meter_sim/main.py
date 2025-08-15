@@ -7,17 +7,6 @@ import aiohttp
 from pydoover.docker import Application, run_app
 from pydoover.config import Schema
 
-
-PULSE_INTERVALS = {
-    "no_rain": 0,
-    "light_rain": 360,  # 2mm per hour
-    "moderate_rain": 144,  # 5mm per hour
-    "heavy_rain": 36,  # 20mm per hour
-    "very_heavy_rain": 14.4,  # 50mm per hour
-}
-
-DEFAULT_INTENSITY = "light_rain"
-
 log = logging.getLogger()
 
 
@@ -41,39 +30,43 @@ class FlowMeterSimulator(Application):
         self.pulse_pin = int(os.environ.get("PULSE_PIN", 0))
 
         self.pulse_interval: float = 0.0
-        self.last_intensity: str = ""
+        self.last_intensity: float = 0.0
 
         self.pulse_task = None
 
     async def setup(self):
-        log.info("Setting up Flow Meter Gauge Simulator")
+        log.info("Setting up Flow Meter Pulse Simulator")
         self.platform_sim = PlatformInterfaceSim()
-        self.update_pulse_interval(DEFAULT_INTENSITY)
+        self.update_pulse_interval(1)
 
     async def main_loop(self):
-        intensity = self.get_tag("rain_intensity")
-        if intensity != self.last_intensity:
-            log.info(f"Rain intensity changed to {intensity}, updating pulse interval.")
-            self.update_pulse_interval(intensity)
-            self.last_intensity = intensity
+        freq = float(self.get_tag("sim_pulse_rate_hz"))
+        if freq != self.last_freq:
+            log.info(f"Flow rate changed to {freq}, updating pulse interval.")
+            self.update_pulse_interval(freq)
+            self.last_freq = freq
 
-    def update_pulse_interval(self, intensity):
+    def update_pulse_interval(self, freq):
+        log.info(f"Updating pulse interval for freq: {freq}")
         try:
-            self.pulse_interval = PULSE_INTERVALS[intensity]
-        except KeyError:
-            log.info("Unknown rain intensity, using default pulse interval.")
-            self.pulse_interval = PULSE_INTERVALS[DEFAULT_INTENSITY]
+            self.pulse_interval = 1/freq
+        except Exception as e:
+            log.error(f"Error updating pulse interval: {e}")
+            self.pulse_interval = 1
 
         if self.pulse_task:
             self.pulse_task.cancel()
         self.pulse_task = asyncio.create_task(self.do_pulses())
 
     async def do_pulses(self):
+        log.info(f"Starting pulse task with interval: {self.pulse_interval} seconds")
         await self.platform_sim.set_di(self.pulse_pin, True)
+        log.info("Pulse pin set to HIGH, waiting for interval to elapse.")
         while True:
             log.info(f"Waiting {self.pulse_interval} seconds before next pulse")
             await asyncio.sleep(self.pulse_interval)
 
+            log.info("Sending pulse")
             await self.platform_sim.set_di(self.pulse_pin, False)
             await asyncio.sleep(0.1)
             await self.platform_sim.set_di(self.pulse_pin, True)

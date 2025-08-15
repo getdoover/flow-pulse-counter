@@ -4,13 +4,13 @@ class FlowPulseCounterUI:
     def __init__(self, config: FlowPulseCounterConfig):
         self.config = config
         
-        self.flow_total_count = ui.NumericParameter(
-            "flow_total_count", 
-            f"Total Flow ({self.config.volume_unit})", 
-            precision=1,
-            default=0,
-            hidden=True
-        )
+        # self.flow_total_count = ui.NumericParameter(
+        #     "flow_total_count", 
+        #     f"Total Flow ({self.config.volume_unit})", 
+        #     precision=1,
+        #     default=0,
+        #     hidden=True
+        # )
         
         self.current_flow_rate = ui.NumericVariable(
             "current_flow_rate", 
@@ -34,7 +34,7 @@ class FlowPulseCounterUI:
         )
         
     def fetch(self):
-        return self.current_flow_rate, self.daily_total, self.total_flow, self.flow_total_count
+        return self.current_flow_rate, self.daily_total, self.total_flow #, self.flow_total_count
 
     def update(self, current_flow_rate: float = None , daily_total: float = None, total_flow: float = None):
         if daily_total is not None:

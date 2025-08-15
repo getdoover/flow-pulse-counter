@@ -17,8 +17,10 @@ class FlowMeter:
         l_per_pulse: float,
         volume_unit_litres: float,
         time_unit_seconds: int,
-        pulse_pin: int,        
-        max_rpm: int = None,
+        pulse_pin: int,
+        pulse_edge_mode: str,    
+        init_estimate: int = None,
+        max_rpm: int = None
     ):
         self.plt_iface = plt_iface
         self._l_per_pulse = l_per_pulse
@@ -26,6 +28,7 @@ class FlowMeter:
         self.time_unit_seconds = time_unit_seconds
         self.pulse_pin = pulse_pin
         self.max_rpm = max_rpm
+        self.pulse_edge_mode = pulse_edge_mode
 
         self.pulse_count = 0
         self._is_pumping = False
@@ -39,14 +42,15 @@ class FlowMeter:
             self.current_duty_cycle
         )
 
-        self.reset_kalman()
+        self.reset_kalman(init_estimate=init_estimate)
 
         self.pulse_counter = self.plt_iface.get_new_pulse_counter(
             di=self.pulse_pin,
-            edge="rising",
+            edge=self.pulse_edge_mode,
             callback=self.pulse_counter_callback,
             rate_window_secs=60,
         )
+        log.info(f"Flow meter initialized with pulse edge mode: {self.pulse_edge_mode}")
 
     @property
     def l_per_pulse(self):
@@ -54,7 +58,7 @@ class FlowMeter:
 
     ## The kalman filter is measuring inter pulse time, so the flow rate is in l/hr
     def reset_kalman(
-        self, sensitivity: float = 0.0001, init_estimate: int = None, init_error_estimate: float = 0.001,
+        self, sensitivity: float = 0.1, init_estimate: int = None, init_error_estimate: float = 0.001,
     ):
         ## Set the kalman filter initial estimate to the target flow rate with a tight error estimate
         self.kf = KalmanFilter1D(
@@ -83,6 +87,7 @@ class FlowMeter:
         return mv
 
     def pulse_counter_callback(self, di, di_value, dt_secs, counter, edge):
+        log.info("*** Pulse DETECTED ***")
         if self.should_ignore_next_pulse:
             self.should_ignore_next_pulse = False
             return
@@ -92,7 +97,9 @@ class FlowMeter:
         # print("\n ***** \n     dt_secs: ", dt_secs, " \n ***** \n")
         self.record_measurement(dt_secs)
         self.pulse_count += 1
+        
         self.total_count += 1
+        log.info(f"incrementing total count: {self.total_count}, dt_secs: {dt_secs}")
 
     def get_total_pulses(self, last_recorded):
         """
@@ -111,7 +118,7 @@ class FlowMeter:
     def is_pumping(self, value):
         # Reset the kalman if the pump has been restarted
         if self.is_pumping is False and value is True:
-            self.reset_kalman()
+            self.reset_kalman(sensitivity=1, init_estimate=0, init_error_estimate=0.1)
             self.should_ignore_next_pulse = True
             
         if value is False:

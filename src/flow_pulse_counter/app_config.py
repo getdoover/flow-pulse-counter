@@ -14,6 +14,10 @@ class VolumeUnits(enum.Enum):
     LITERS = VolumeUnit("L", 1.0)
     GALLONS = VolumeUnit("gal", 3.78541)
     CUBIC_METERS = VolumeUnit("m^3", 1000.0)
+    
+class EdgeMode(enum.Enum):
+    RISING = "rising"
+    FALLING = "falling"
 
 def generate_flow_rate_units():
     members = {}
@@ -33,6 +37,13 @@ class FlowPulseCounterConfig(config.Schema):
             description="The Litres of fluid dispensed per pulse from the flow meter.",
         )
         
+        self.pulse_edge_mode = config.Enum(
+            "Pulse Edge Mode",
+            choices=EdgeMode,
+            default=EdgeMode.RISING,
+            description="The edge mode for the flow meter pulse pin.",
+        )
+        
         self.flow_pulse_pin = config.Integer(
             "Flow Pulse Pin",
             default=0,
@@ -44,6 +55,7 @@ class FlowPulseCounterConfig(config.Schema):
             choices=FlowRateUnits,
             default=FlowRateUnits.L_PER_MIN,
             description="The units to use for flow rate measurement on the App.",
+            hidden=True
         )
         
         self.reset_daily_total_time = config.Integer(
@@ -68,8 +80,9 @@ class FlowPulseCounterConfig(config.Schema):
 
         self.show_flow_rate = config.Boolean(
             "Show Flow Rate",
-            default=True,
-            description="Enable the flow rate in the UI"
+            default=False,
+            description="Enable the flow rate in the UI",
+            hidden=True
         )
 
     @property

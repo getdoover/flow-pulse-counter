@@ -23,8 +23,20 @@
                     "x-name": "litres_per_pulse",
                     "x-hidden": false,
                     "type": "number",
-                    "description": "The volume of fluid dispensed per pulse from the flow meter.",
+                    "description": "The Litres of fluid dispensed per pulse from the flow meter.",
                     "default": 1.1
+                },
+                "pulse_edge_mode": {
+                    "enum": [
+                        "rising",
+                        "falling"
+                    ],
+                    "title": "Pulse Edge Mode",
+                    "x-name": "pulse_edge_mode",
+                    "x-hidden": false,
+                    "type": "string",
+                    "description": "The edge mode for the flow meter pulse pin.",
+                    "default": "rising"
                 },
                 "flow_pulse_pin": {
                     "title": "Flow Pulse Pin",
@@ -53,6 +65,7 @@
                     "x-name": "flow_rate_units",
                     "x-hidden": false,
                     "type": "string",
+                    "description": "The units to use for flow rate measurement on the App.",
                     "default": "L/min"
                 },
                 "reset_daily_total_time": {
@@ -60,7 +73,7 @@
                     "x-name": "reset_daily_total_time",
                     "x-hidden": false,
                     "type": "integer",
-                    "description": "The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm.",
+                    "description": "The time (in hours) to reset the daily total. e.g. 1 for 1am, 8 for 8am, 19 for 7pm etc",
                     "default": 0,
                     "minimum": 0,
                     "maximum": 23
