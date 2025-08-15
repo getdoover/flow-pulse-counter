@@ -43,6 +43,9 @@ class FlowPulseCounterApplication(Application):
         if _daily_total_reset_time is None:
             self.daily_total_reset_time = hour_to_datetime(self.config.reset_daily_total_time.value)
         else:
+            # for testing:
+            # self.daily_total_reset_time = datetime.fromisoformat(_daily_total_reset_time)
+            
             config_daily_total_reset_time = hour_to_datetime(self.config.reset_daily_total_time.value)
             tag_daily_total_reset_time = datetime.fromisoformat(_daily_total_reset_time)
             self.daily_total_reset_time = datetime.combine(tag_daily_total_reset_time, config_daily_total_reset_time.time())    
@@ -54,6 +57,10 @@ class FlowPulseCounterApplication(Application):
         if self.tag_count_on_start is None:
             await self.set_tag("total_count", 0)
             self.tag_count_on_start = 0
+        
+        self.yesterdays_count = self.get_tag("yesterdays_count")
+        if self.yesterdays_count:
+            self.ui.yesterdays_total.update(self.yesterdays_count*self.config.l_per_pulse)
         
         target_rate = self.get_tag("target_flow_rate")
         if target_rate is None:
@@ -77,7 +84,16 @@ class FlowPulseCounterApplication(Application):
         tag_count = self.get_tag("total_count")
 
         if datetime.now() > self.daily_total_reset_time:
+            #update the yesterdays count
+            self.yesterdays_count = self.daily_count
+            
+            #reset the daily count
             self.daily_count = 0
+            
+            await self.set_tag("yesterdays_count", self.yesterdays_count)
+            self.ui.yesterdays_total.update(self.yesterdays_count*self.config.l_per_pulse)
+            
+            #update the daily total reset time
             self.daily_total_reset_time += timedelta(days=1)
             await self.set_tag("daily_total_reset_time", self.daily_total_reset_time.isoformat())
             log.info(f"Daily total reset at {self.daily_total_reset_time.strftime('%Y-%m-%d %H:%M:%S')}")        

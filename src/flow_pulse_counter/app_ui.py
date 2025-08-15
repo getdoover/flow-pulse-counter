@@ -26,6 +26,13 @@ class FlowPulseCounterUI:
             hidden=not self.config.show_daily_total.value
         )
         
+        self.yesterdays_total = ui.NumericVariable(
+            "yesterdays_total", 
+            f"Yesterday's Total ({self.config.volume_unit})", 
+            precision=1,
+            hidden=not self.config.show_daily_total.value
+        )
+        
         self.total_flow = ui.NumericVariable(
             "total_flow", 
             f"Total Flow ({self.config.volume_unit})", 
@@ -34,7 +41,7 @@ class FlowPulseCounterUI:
         )
         
     def fetch(self):
-        return self.current_flow_rate, self.daily_total, self.total_flow #, self.flow_total_count
+        return self.current_flow_rate, self.daily_total, self.total_flow, self.yesterdays_total #, self.flow_total_count
 
     def update(self, current_flow_rate: float = None , daily_total: float = None, total_flow: float = None):
         if daily_total is not None:
