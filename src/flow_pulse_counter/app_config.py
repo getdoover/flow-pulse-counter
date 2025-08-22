@@ -64,7 +64,7 @@ class FlowPulseCounterConfig(config.Schema):
             choices=FlowRateUnits,
             default=FlowRateUnits.L_PER_MIN,
             description="The units to use for flow rate measurement on the App.",
-            hidden=True
+            hidden=False
         )
         
         self.reset_daily_total_time = config.Integer(
@@ -98,6 +98,27 @@ class FlowPulseCounterConfig(config.Schema):
             "Show Flow Rate",
             default=False,
             description="Enable the flow rate in the UI",
+            hidden=False
+        )
+        
+        self.flow_rate_sensitivity = config.Number(
+            "Flow Rate Sensitivity",
+            default=0.2,
+            description="The process variance of the flow rate measurement",
+            hidden=False
+        )
+        
+        self.measurement_variance = config.Number(
+            "Measurement Variance",
+            default=25.0,
+            description="The measurement variance of the flow rate measurement",
+            hidden=False
+        )
+        
+        self.debug_mode = config.Boolean(
+            "Debug Mode",
+            default=False,
+            description="Enable debug mode",
             hidden=True
         )
 

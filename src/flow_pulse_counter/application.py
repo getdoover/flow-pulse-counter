@@ -26,7 +26,7 @@ class FlowPulseCounterApplication(Application):
         self.ui: FlowPulseCounterUI = None
         self.state: FlowPulseCounterState = None
         
-        self.loop_target_period = 0.5
+        self.loop_target_period = 1
         self.next_reset_time = None
         self.total_count_on_daily_reset = 0
         
@@ -48,7 +48,6 @@ class FlowPulseCounterApplication(Application):
         else:
             # for testing:
             # self.daily_total_reset_time = datetime.fromisoformat(_daily_total_reset_time)
-            
             config_daily_total_reset_time = hour_to_datetime(
                 self.config.reset_daily_total_time.value,
                 self.config.reset_time_timezone.value
@@ -80,12 +79,18 @@ class FlowPulseCounterApplication(Application):
             time_unit_seconds=self.config.time_unit_seconds,
             pulse_pin=self.config.pulse_pin,
             pulse_edge_mode=self.config.pulse_edge_mode.value,
-            init_estimate=target_rate
+            init_estimate=target_rate,
+            flow_rate_sensitivity=self.config.flow_rate_sensitivity.value,
+            measurement_variance=self.config.measurement_variance.value,
+            set_tags=self.set_tags,
+            debug_mode=self.config.debug_mode.value
         )
         
-        self.flow_meter.is_pumping = True
+        await self.flow_meter.setup()
 
     async def main_loop(self):
+        log.info("main loop")
+        tags = {}
         total_flow_count = (self.flow_meter.total_count + self.tag_count_on_start)
         tag_count = self.get_tag("total_count")
 
@@ -96,12 +101,12 @@ class FlowPulseCounterApplication(Application):
             #reset the daily count
             self.daily_count = 0
             
-            await self.set_tag("yesterdays_count", self.yesterdays_count)
+            tags["yesterdays_count"] = self.yesterdays_count
             self.ui.yesterdays_total.update(self.yesterdays_count*self.config.l_per_pulse)
             
             #update the daily total reset time
             self.daily_total_reset_time += timedelta(days=1)
-            await self.set_tag("daily_total_reset_time", self.daily_total_reset_time.isoformat())
+            tags["daily_total_reset_time"] = self.daily_total_reset_time.isoformat()
             log.info(f"Daily total reset at {self.daily_total_reset_time.strftime('%Y-%m-%d %H:%M:%S')}")        
         # If the total flow count hasn't changed, we don't need to update the UI
         if (
@@ -115,9 +120,10 @@ class FlowPulseCounterApplication(Application):
             daily_total = self.daily_count * self.config.l_per_pulse
             
             log.info(f"Updating UI; total_flow: {total_flow}, daily_total: {daily_total}, current_flow_rate: {self.flow_meter.flow_rate}")
-            await self.set_tag("total_count", total_flow_count)
-            await self.set_tag("daily_total", self.daily_count)
-            await self.set_tag("current_flow_rate", self.flow_meter.flow_rate)
+            tags["total_count"] = total_flow_count
+            tags["daily_total"] = self.daily_count
+        tags["current_flow_rate"] = self.flow_meter.flow_rate
+        await self.set_tags(tags=tags)
             
         self.ui.update(
             current_flow_rate=self.flow_meter.flow_rate,

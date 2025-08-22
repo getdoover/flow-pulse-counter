@@ -22,10 +22,10 @@ class CustomFormatter(logging.Formatter):
         #     return f"{time_str} | {record.levelname}: {record.getMessage()} ({record.filename}:{record.lineno})"
 
 class ApplicationOnlyFilter(logging.Filter):
-    """Filter to only show logs from the application module"""
+    """Filter to only show logs from the application and flow_meter modules"""
     def filter(self, record):
-        # Only show logs from flow_pulse_counter.application logger
-        return record.name == "flow_pulse_counter.application"
+        # Show logs from flow_pulse_counter.application and flow_pulse_counter.flow_meter loggers
+        return record.name in ["flow_pulse_counter.application", "flow_pulse_counter.flow_meter"]
 
 def main():
     """

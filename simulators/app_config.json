@@ -4,5 +4,10 @@
     "reset_daily_total_time": 16,
     "totalizer_enabled": true,
     "litres_per_pulse": 0.125,
-    "pulse_edge_mode": "falling"
+    "pulse_edge_mode": "falling",
+    "show_flow_rate": true,
+    "flow_rate_sensitivity": 0.05,
+    "measurement_variance": 25.0,
+    "debug_mode": false
+
 }
