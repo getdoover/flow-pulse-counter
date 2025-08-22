@@ -5,7 +5,7 @@ import asyncio
 from typing import Any
 
 from pydoover.docker import Application
-from pydoover import ui
+from pydoover import ui, ApplicationVariant
 from datetime import datetime, timedelta
 
 from .app_config import FlowPulseCounterConfig
@@ -33,6 +33,8 @@ class FlowPulseCounterApplication(Application):
     async def setup(self):
         self.ui = FlowPulseCounterUI(self.config) 
         self.ui_manager.add_children(*self.ui.fetch())
+        if self.config.flatten_ui.value:
+            self.ui_manager.set_variant(ApplicationVariant.stacked)
         
         self.daily_count = self.get_tag("daily_total")
         if self.daily_count is None:

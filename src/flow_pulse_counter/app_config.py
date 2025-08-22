@@ -121,6 +121,13 @@ class FlowPulseCounterConfig(config.Schema):
             description="Enable debug mode",
             hidden=True
         )
+        
+        self.flatten_ui = config.Boolean(
+            "Flatten UI",
+            default=True,
+            description="Flatten the ui in the App.",
+            hidden=False
+        )
 
     @property
     def totalizer_enabled(self):
