@@ -63,7 +63,7 @@
                     ],
                     "title": "Flow Rate Units",
                     "x-name": "flow_rate_units",
-                    "x-hidden": true,
+                    "x-hidden": false,
                     "type": "string",
                     "description": "The units to use for flow rate measurement on the App.",
                     "default": "L/min"
@@ -114,9 +114,33 @@
                 "show_flow_rate": {
                     "title": "Show Flow Rate",
                     "x-name": "show_flow_rate",
-                    "x-hidden": true,
+                    "x-hidden": false,
                     "type": "boolean",
                     "description": "Enable the flow rate in the UI",
+                    "default": false
+                },
+                "flow_rate_sensitivity": {
+                    "title": "Flow Rate Sensitivity",
+                    "x-name": "flow_rate_sensitivity",
+                    "x-hidden": false,
+                    "type": "number",
+                    "description": "The process variance of the flow rate measurement",
+                    "default": 0.2
+                },
+                "measurement_variance": {
+                    "title": "Measurement Variance",
+                    "x-name": "measurement_variance",
+                    "x-hidden": false,
+                    "type": "number",
+                    "description": "The measurement variance of the flow rate measurement",
+                    "default": 25.0
+                },
+                "debug_mode": {
+                    "title": "Debug Mode",
+                    "x-name": "debug_mode",
+                    "x-hidden": true,
+                    "type": "boolean",
+                    "description": "Enable debug mode",
                     "default": false
                 }
             },
