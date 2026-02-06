@@ -1,51 +1,109 @@
 {
     "flow_pulse_counter": {
         "name": "flow_pulse_counter",
-        "display_name": "flow-pulse-counter",
+        "display_name": "Flow Pulse Counter",
         "type": "DEV",
         "visibility": "PUB",
         "allow_many": true,
         "description": "uses pulse counting to allow a doovit to convert pulses from a flow meter into flow rate. Allows for calibration via the UI, and configuration of precisely how pulses are converted to flow rates via config",
         "long_description": "README.md",
-        "depends_on": [],
-        "owner_org_key": "FIX-ME",
-        "image_name": "ghcr.io/getdoover/flow-pulse-counter:main",
-        "container_registry_profile_key": "FIX-ME",
+        "depends_on": [
+            "platform_interface"
+        ],
+        "owner_org_key": "",
+        "image_name": "ghcr.io/getdoover/flow_pulse_counter:main",
+        "container_registry_profile_key": "",
         "build_args": "--platform linux/amd64,linux/arm64",
+        "lambda_config": {},
+        "organisation_id": null,
+        "key": null,
+        "owner_org_id": null,
+        "code_repo_id": null,
+        "container_registry_profile_id": null,
+        "repo_branch": "main",
+        "icon_url": "",
+        "staging_config": {},
+        "export_config_command": null,
+        "run_command": null,
+        "lambda_arn": null,
         "config_schema": {
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "$id": "",
             "title": "Application Config",
             "type": "object",
             "properties": {
-                "digital_outputs_enabled": {
-                    "title": "Digital Outputs Enabled",
-                    "x-name": "digital_outputs_enabled",
-                    "x-hidden": false,
-                    "type": "boolean",
-                    "default": true
-                },
-                "a_funny_message": {
-                    "title": "A Funny Message",
-                    "x-name": "a_funny_message",
-                    "x-hidden": false,
-                    "type": "string"
-                },
-                "simulator_app_key": {
-                    "format": "doover-application",
-                    "title": "Simulator App Key",
-                    "x-name": "simulator_app_key",
+                "app_display_name": {
+                    "title": "App Display Name",
+                    "x-name": "app_display_name",
                     "x-hidden": false,
                     "type": "string",
-                    "description": "The app key for the simulator"
+                    "description": "Display name shown in the Doover UI",
+                    "default": "Flow Pulse Counter"
+                },
+                "input_pin": {
+                    "title": "Input Pin",
+                    "x-name": "input_pin",
+                    "x-hidden": false,
+                    "type": "integer",
+                    "description": "Digital input pin number connected to the flow meter pulse output",
+                    "default": 1
+                },
+                "pulses_per_litre": {
+                    "title": "Pulses Per Litre",
+                    "x-name": "pulses_per_litre",
+                    "x-hidden": false,
+                    "type": "number",
+                    "description": "Calibration factor: number of pulses the meter produces per litre of flow",
+                    "default": 450.0
+                },
+                "flow_rate_unit": {
+                    "enum": [
+                        "L/min",
+                        "L/hr",
+                        "m3/hr"
+                    ],
+                    "title": "Flow Rate Unit",
+                    "x-name": "flow_rate_unit",
+                    "x-hidden": false,
+                    "type": "string",
+                    "description": "Unit for flow rate display",
+                    "default": "L/min"
+                },
+                "debounce_ms": {
+                    "title": "Debounce ms",
+                    "x-name": "debounce_ms",
+                    "x-hidden": false,
+                    "type": "integer",
+                    "description": "Debounce time in milliseconds to filter electrical noise on the pulse input",
+                    "default": 50
+                },
+                "reporting_interval": {
+                    "title": "Reporting Interval",
+                    "x-name": "reporting_interval",
+                    "x-hidden": false,
+                    "type": "integer",
+                    "description": "Interval in seconds between flow rate calculations (rolling window size)",
+                    "default": 10
+                },
+                "low_flow_threshold": {
+                    "title": "Low Flow Threshold",
+                    "x-name": "low_flow_threshold",
+                    "x-hidden": false,
+                    "type": "number",
+                    "description": "Flow rate below this value triggers a low-flow warning (0 = disabled)",
+                    "default": 0.0
+                },
+                "high_flow_threshold": {
+                    "title": "High Flow Threshold",
+                    "x-name": "high_flow_threshold",
+                    "x-hidden": false,
+                    "type": "number",
+                    "description": "Flow rate above this value triggers a high-flow warning (0 = disabled)",
+                    "default": 0.0
                 }
             },
             "additionalElements": true,
-            "required": [
-                "a_funny_message",
-                "simulator_app_key"
-            ]
-        },
-        "organisation_id": "FIX-ME"
+            "required": []
+        }
     }
 }

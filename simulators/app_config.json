@@ -1,6 +1,10 @@
 {
-    "simulator_app_key": "sim_app_key",
-    "digital_input_count": 1,
-    "digital_output_count": 2,
-    "a_funny_message": "yeeha"
+    "app_display_name": "Flow Pulse Counter",
+    "input_pin": 1,
+    "pulses_per_litre": 450.0,
+    "flow_rate_unit": "L/min",
+    "debounce_ms": 50,
+    "reporting_interval": 10,
+    "low_flow_threshold": 1.0,
+    "high_flow_threshold": 20.0
 }
